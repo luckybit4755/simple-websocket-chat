@@ -1,0 +1,126 @@
+<HTML>
+	<HEAD>
+		<TITLE>client</TITLE>
+		<script type="text/javascript">
+			window.onload = function() {
+				let stuff = ided();
+
+				stuff.server.focus();
+
+				const log = function( txt ) { 
+					txt = '[ ' + ts() + ' ] ' + txt;
+					stuff.messages.prepend( lid( txt ) );
+				};
+
+				log( 'once the server is up, click the connect button' );
+
+				stuff.connect.onclick = function() {
+					log( 'ok, you clicked it... good job' );
+					try {
+						// see https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
+						let chatSocket = new WebSocket( stuff.server.value );
+
+						chatSocket.onopen = function( event ) {
+							log( 'connected to server' );
+
+							toggle( stuff );
+							stuff.message.focus();
+
+							stuff.send.onclick = function() {
+								try {
+									chatSocket.send( stuff.message.value );
+								} catch ( e ) {
+									// if the server closes after connetion, 
+									// does not catch: WebSocket is already in CLOSING or CLOSED state.
+									log( 'unable to send message' );
+								}
+							};
+
+							chatSocket.onmessage = function( event ) {
+								log( 'message:' + event.data );
+							};
+
+							chatSocket.onerror = function( event ) {
+								log( 'oopsie...' );
+							};
+						};
+
+						chatSocket.onerror = function( event ) {
+							log( 'unable to connect. is the server running?' );
+						};
+					} catch ( e ) {
+						// if the server is not running when trying to connect
+						// does not catch: Error in connection establishment: net::ERR_CONNECTION_REFUSED
+						log( 'ouch: ' + e );
+					}
+				};
+			};
+
+			// make dom stuff less annoying
+
+			const ided = function() {
+				let idz = {}
+				let treeWalker = document.createTreeWalker( document.body );
+				while( treeWalker.nextNode() ) {
+					let c = treeWalker.currentNode;
+					if ( c.id ) idz[ c.id ] = c;
+				}
+				return idz;
+			};
+
+			const lid = function( txt ) {
+				let li = document.createElement( 'li' );
+				li.appendChild( document.createTextNode( txt ) );
+				return li;
+			};
+
+			const toggle = function( stuff ) {
+				let dis = 'disabled';
+				for ( let id in stuff ) {
+					if ( stuff[ id ].hasAttribute( dis ) ) { 
+						stuff[ id ].removeAttribute( dis );
+					} else {
+						stuff[ id ].setAttribute( dis, dis );
+					}
+				}
+			};
+
+
+			const ts = function() {
+				var now = new Date();
+
+				var bits = 'FullYear Month Date Hours Minutes Seconds Milliseconds'.split( ' ' );
+				var post = '-- ::_'
+				let timestamp = '';
+				for ( var i = 0 ; i < bits.length ; i++ ) {
+					var bit = '' + now[ 'get' + bits[ i ] ]();
+					if ( bit.length < 2 ) {
+						bit = '0' + bit;
+					}
+					timestamp += bit;
+					if ( i < post.length ) timestamp += post[ i ];
+				}
+				return timestamp;
+			}
+
+
+		</script>
+
+		<style>
+			body {
+				font-family: sans-serif;
+			}
+		</style>
+	</HEAD>
+	<BODY>
+		<div>
+			<input  id="server"  type="text" size="52" value="ws://localhost:47474/chat/"/>
+			<button id="connect" type="button" >connect</button>
+		</div>
+		<div>
+			<input  id="message" disabled="yup" type="text" size="52" placeholder="Message"/>
+			<button id="send"    disabled="yup" type="button" >send</button>
+		</div>
+		<ul id="messages"></ul>
+	</BODY>
+</HTML>
