@@ -26,7 +26,7 @@ import java.util.HashMap;
  *
  * Just about the simplest websocket chat server I could come up with...
  *
- * @author Valerie Hammond
+ * @author Valerie GvM
  *
  */
 @ServerEndpoint(value="/chat/")
