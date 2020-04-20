@@ -1,0 +1,60 @@
+body {
+	font-family: sans-serif;
+	background:#eed;
+}
+
+messages {
+	display:block;
+	overflow-y:scroll;
+	height:10em;
+}
+
+message {
+	display:block;
+}
+
+table {
+	border:collapse;
+	font-size:400%;
+	border-top: 1px solid #ffe;
+	border-left: 1px solid #ffe;
+	border-right: 1px solid #ddc;
+	border-right: 1px solid #ddc;
+}
+
+tr {
+	display:block;
+	padding:0em;
+	spacing:0em;
+}
+
+td {
+	width:  1.3em;
+	height: 1.3em;
+	padding-left:0.3em;
+}
+
+
+tr:nth-of-type(1) td {
+	border-bottom: 1px solid black;
+}
+
+tr:nth-of-type(2) td {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+tr:nth-of-type(3) td {
+	border-top: 1px solid black;
+}
+
+td:nth-of-type(1) {
+	border-right: 1px solid black;
+}
+td:nth-of-type(2) {
+	border-right: 1px solid black;
+	border-left: 1px solid black;
+}
+td:nth-of-type(3) {
+	border-left: 1px solid black;
+}
+
